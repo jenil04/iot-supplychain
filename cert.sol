@@ -10,6 +10,7 @@ contract Certificate {
         string RFID;
         uint   DeviceID;
         string firmwareVersion;
+        string signature;
 
         // date when the certificate was assigned.
         uint issue_date;
@@ -25,7 +26,7 @@ contract Certificate {
     * commits the certificate details to the blockchain
     */
     function issueCert(uint id, address _owner, string _RFID, uint _DeviceID, 
-    string _firmwareVersion, uint _issue_date, string _data) public {
+    string _firmwareVersion, uint _issue_date, string _data, string _signature) public {
         
         // Setting the amount of certificates for testing.
         iotCertificates.length = 100;
@@ -37,13 +38,14 @@ contract Certificate {
         iotCertificates[id].firmwareVersion = _firmwareVersion;
         iotCertificates[id].issue_date = _issue_date;
         iotCertificates[id].data = _data;
+        iotCertificates[id].signature = _signature;
     }
 
     /**
     * @dev returns contract metadata in one function call, rather than separate .call()s
     */
     function verifyCertificateDetails(uint id, address _owner, uint _DeviceID) public returns (
-        address, string, uint, string, uint, string) {
+        address, string, uint, string, uint, string, string) {
         // Verifying owner's identity and device number to grant 
         // access to the data.
         require(_owner == iotCertificates[id].owner 
@@ -51,11 +53,11 @@ contract Certificate {
         
             return (
             iotCertificates[id].owner,
-            iotCertificates[id].RFID,
             iotCertificates[id].DeviceID,
             iotCertificates[id].firmwareVersion,
             iotCertificates[id].issue_date,
-            iotCertificates[id].data
+            iotCertificates[id].data,
+            iotCertificates[id].signature
             );
         
     }
